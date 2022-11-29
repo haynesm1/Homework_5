@@ -1,0 +1,8 @@
+0E  --H0
+0E  --H1 -- FF on the 7-seg display
+40  --H2
+40  --H3 -- 00 on the 7-seg display
+0E  --H4
+0E  --H5 -- FF on the 7-seg display
+40  --H6
+40  --H7 -- 00 on the 7-seg display

@@ -1,0 +1,37 @@
+0000000000 / some zeros to start things off
+1111111111111111111111111 // 50 ones to represent
+1111111111111111111111111 // the leader-code "on" signal
+0000000000000000000000000 // 25 zeros for LC-off signal 
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000000000 // a one
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // a zero
+1000000 // the stop bit
