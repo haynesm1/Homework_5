@@ -116,17 +116,16 @@ begin
 			when init =>
 				if(posedge = '1') then
 					nxt_state <= read_LC_on;
-				else
-					nxt_state <= init;
 				end if;
 			when read_LC_on =>
 				reading_LC_on <= '1';
-				if(data_in = '0') then
+				if(data = '0') then
 					nxt_state <= check_LC_on_count;
 				else
 					nxt_state <= read_LC_on;
 				end if;
 			when check_LC_on_count =>
+			reading_data <= '1';
 				if(LC_on_counter < LC_on_max+padding) then
 					nxt_state <= read_LC_off;
 				else
@@ -135,12 +134,14 @@ begin
 				end if;
 			when read_LC_off =>
 				reading_LC_off <= '1';
+				reading_data <= '1';
 				if(posedge = '1') then
 					nxt_state <= check_LC_off_count;
 				else
 					nxt_state <= read_LC_off;
 				end if;
 			when check_LC_off_count =>
+				reading_data <= '1';
 				if(LC_off_counter < LC_off_max+padding) then
 					nxt_state <= read_data;
 				else
@@ -156,6 +157,7 @@ begin
 				end if;
 			when check_data=>
 				checking_data <= '1';
+				reading_data <= '1';
 				if(data_counter /= 31) then
 					nxt_state <= read_data;
 				else
@@ -196,6 +198,9 @@ begin
 			if((reading_LC_on = '1') and (LC_on_counter /= LC_on_max+padding)) then
 				LC_on_counter <= LC_on_counter + 1;
 			end if;
+			if(LC_on_counter = LC_on_max + padding) then
+				LC_on_counter <= 0;
+			end if;
 		end if;
 		-- process to count the number of clocks during the LC_on
 		-- portion of the incomming data sequence
@@ -206,6 +211,9 @@ begin
 		if((rising_edge(clk))) then
 			if((reading_LC_off ='1') and ((LC_off_counter /= LC_off_max+padding))) then
 				LC_off_counter <= LC_off_counter + 1;
+			end if;
+			if(LC_off_counter = LC_off_max + padding) then
+				LC_off_counter <= 0;
 			end if;
 		end if;
 		-- process to count the number of clocks during the LC_off
@@ -218,6 +226,9 @@ begin
 			if((reading_data = '1') and (clock_counter /= one_clocks+padding)) then
 				clock_counter <= clock_counter + 1;
 			end if;
+			if(clock_counter = one_clocks + padding) then
+				clock_counter <= 0;
+			end if;
 		end if;
 		-- process to count the number of clocks during the "data",
 		-- or payload, portion of the data sequence
@@ -225,18 +236,38 @@ begin
 	-- counter to counter the number of data bits
 	data_counter_proc : process(clk)
 	begin
-		if((reading_data = '1') and (data_counter /= max_bits-1)) then
-			data_counter <= data_counter +1;
+		if(rising_edge(clk)) then
+			if((reset = '0') or (data_counter = max_bits-1)) then
+				data_counter <= 0;
+			elsif(reading_data = '1') then
+				data_counter <= data_counter +1;
+			else 
+				data_counter <= 0;
+			end if;
 		end if;
+		--f((reading_data = '1') and (data_counter /= max_bits-1)) then
+		--	data_counter <= data_counter +1;
+		--nd if;
+		--f(data_counter = max_bits - 1) then
+		--	data_counter <= 0;
+		--nd if;
 		-- process to determine the number of data bits counted in the
 		-- payload
 	end process data_counter_proc;
 	
+	--shift_reg <= shift_reg(max_bits - 1 downto 1) & '0';
 	shift_reg_proc : process(clk)
 	begin
-		if(reading_data ='1') then
-			shift_reg <= shift_reg(max_bits-1 downto 1) & data_in;
+		if(rising_edge(clk)) then
+			if(reset = '0') then
+				shift_reg <= (others => '0');
+			elsif(reading_data = '1') then
+				shift_reg <= shift_reg(max_bits-1 downto 1) & data;
+			end if;
 		end if;
+		--if(reading_data ='1') then
+		--	shift_reg <= shift_reg(max_bits-1 downto 1) & data_bit;
+		--end if;
 		-- process to define the shift register that holds the incomming
 		-- data.  (hint:  don't use canned VHDL functions for shifting)
 	end process shift_reg_proc;
