@@ -195,10 +195,12 @@ begin
 	LC_on_proc : process(clk)
 	begin
 		if((rising_edge(clk))) then
-			if((reading_LC_on = '1') and (LC_on_counter /= LC_on_max+padding)) then
+			if((reset = '0') or (LC_on_counter = LC_on_max+padding)) then
+				LC_on_counter <= 0;
+			
+			elsif(reading_LC_on = '1') then
 				LC_on_counter <= LC_on_counter + 1;
-			end if;
-			if(LC_on_counter = LC_on_max + padding) then
+			else	
 				LC_on_counter <= 0;
 			end if;
 		end if;
@@ -209,10 +211,12 @@ begin
 	LC_off_proc : process(clk)
 	begin
 		if((rising_edge(clk))) then
-			if((reading_LC_off ='1') and ((LC_off_counter /= LC_off_max+padding))) then
+			if((reset = '0') or (LC_off_counter = LC_off_max+padding)) then
+				LC_off_counter <= 0;
+			
+			elsif(reading_LC_off = '1') then
 				LC_off_counter <= LC_off_counter + 1;
-			end if;
-			if(LC_off_counter = LC_off_max + padding) then
+			else	
 				LC_off_counter <= 0;
 			end if;
 		end if;
@@ -222,11 +226,12 @@ begin
 	-- couner to count the number of clocks per data bit
 	clock_counter_proc : process(clk)
 	begin
-		if(rising_edge(clk)) then
-			if((reading_data = '1') and (clock_counter /= one_clocks+padding)) then
+		if((rising_edge(clk))) then
+			if((reset = '0') or (clock_counter = one_clocks+padding)) then
+				clock_counter <= 0;
+			elsif(reading_data = '1') then
 				clock_counter <= clock_counter + 1;
-			end if;
-			if(clock_counter = one_clocks + padding) then
+			else	
 				clock_counter <= 0;
 			end if;
 		end if;
@@ -255,7 +260,7 @@ begin
 		-- payload
 	end process data_counter_proc;
 	
-	--shift_reg <= shift_reg(max_bits - 1 downto 1) & '0';
+	shift_reg <= shift_reg(max_bits - 1 downto 1) & '0';
 	shift_reg_proc : process(clk)
 	begin
 		if(rising_edge(clk)) then
