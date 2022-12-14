@@ -263,12 +263,11 @@ begin
 	
 	shift_reg_proc : process(clk)
 	begin
-		shift_reg <= shift_reg(max_bits - 1 downto 1) & '0';
 		if(rising_edge(clk)) then
 			if(reset = '0') then
 				shift_reg <= (others => '0');
 			elsif(reading_data = '1') then
-				shift_reg <= shift_reg(max_bits-1 downto 1) & data;
+				shift_reg <= shift_reg((max_bits-1) - 1 downto 0) & data;
 			end if;
 		end if;
 		--if(reading_data ='1') then
