@@ -150,7 +150,7 @@ begin
 					nxt_state <= check_data;
 				else
 					nxt_state <= read_data;
-					reading_data <= '0';
+					--reading_data <= '0';
 				end if;
 			when check_data=>
 				checking_data <= '1';
