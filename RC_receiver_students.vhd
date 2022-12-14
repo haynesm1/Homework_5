@@ -260,9 +260,10 @@ begin
 		-- payload
 	end process data_counter_proc;
 	
-	shift_reg <= shift_reg(max_bits - 1 downto 1) & '0';
+	
 	shift_reg_proc : process(clk)
 	begin
+		shift_reg <= shift_reg(max_bits - 1 downto 1) & '0';
 		if(rising_edge(clk)) then
 			if(reset = '0') then
 				shift_reg <= (others => '0');
