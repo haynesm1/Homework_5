@@ -58,7 +58,7 @@ signal data_counter				: integer range 0 to max_bits-1;
 -- signals for edge detection circuitry
 signal data						: std_logic;
 signal data_lead, data_follow 	: std_logic;
-signal posedge					: std_logic;
+signal data_posedge				: std_logic;
 -- shift register which holds the transmitted bits
 signal shift_reg				: std_logic_vector(max_bits-1 downto 0) := (others => '0');
 
@@ -104,7 +104,7 @@ begin
 	end process state_proc;
 		
 	nxt_state_proc : process(state, LC_on_counter, LC_off_counter, clock_counter, 
-		data_counter, data, posedge)
+		data_counter, data, data_posedge)
 	begin
 		nxt_state <= state;
 		reading_LC_off <= '0';
@@ -114,7 +114,7 @@ begin
 		
 		case state is
 			when init =>
-				if(posedge = '1') then
+				if(data_posedge = '1') then
 					nxt_state <= read_LC_on;
 				end if;
 			when read_LC_on =>
@@ -135,7 +135,7 @@ begin
 			when read_LC_off =>
 				reading_LC_off <= '1';
 				reading_data <= '1';
-				if(posedge = '1') then
+				if(data_posedge = '1') then
 					nxt_state <= check_LC_off_count;
 				else
 					nxt_state <= read_LC_off;
@@ -150,7 +150,7 @@ begin
 			when read_data =>
 				reading_data <= '1';
 				data_bit <= data_in;
-				if(posedge = '1') then
+				if(data_posedge = '1') then
 					nxt_state <= check_data;
 				else
 					nxt_state <= read_data;
@@ -176,7 +176,7 @@ begin
 	end process nxt_state_proc;
 	
 	-- process to detect positive edge
-	posedge <= data_lead and (not data_follow);
+	data_posedge <= data_lead and (not data_follow);
 	pos_edge_proc : process(clk)
 	begin
 		if(rising_edge(clk)) then
