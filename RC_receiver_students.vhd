@@ -234,13 +234,13 @@ begin
 			end if;
 
 			if(clock_counter = one_clocks - padding) then
-				data_bit <= '1';
+				data_bit <= '0';
 			elsif(clock_counter = one_clocks + padding) then
-				data_bit <= '1';
+				data_bit <= '0';
 			elsif(clock_counter = zero_clocks - padding) then
-				data_bit <= '0';
+				data_bit <= '1';
 			elsif(clock_counter = zero_clocks + padding) then
-				data_bit <= '0';
+				data_bit <= '1';
 			end if;
 		end if;
 	end process clock_counter_proc;
