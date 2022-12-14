@@ -247,11 +247,9 @@ begin
 		if(rising_edge(clk)) then
 			if((reset = '0') or (data_counter = max_bits-1)) then
 				data_counter <= 0;
-			else--if(rising_edge(reading_data)) then
+			elsif(reading_data = '1') then
 				data_counter <= data_counter + 1;
 			end if;
-		--elsif (rising_edge(reading_data)) then
-			--data_counter <= data_counter + 1;
 		end if;
 	end process data_counter_proc;
 	
