@@ -219,12 +219,8 @@ begin
 	-- couner to count the number of clocks per data bit
 	clock_counter_proc : process(clk, reading_data, clock_counter)
 	begin
-		if rising_edge(reading_data) then
-			clock_counter <= 0;
-		end if;
-
 		if((rising_edge(clk))) then
-			if((reset = '0') or (clock_counter = one_clocks+padding-1)) then
+			if((reset = '0') or (reading_data = '0') or (clock_counter = one_clocks+padding-1)) then
 				clock_counter <= 0;
 			elsif(state = read_data) then
 				clock_counter <= clock_counter + 1;
