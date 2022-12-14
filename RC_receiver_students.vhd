@@ -89,7 +89,6 @@ begin
 	rd_data <= reading_data;
 	
 	-- two process state machine
-	--DONE AND SHOULD BE GOOD TO GO
 	state_proc : process(clk) 
 	begin
 		if(rising_edge(clk)) then
@@ -128,7 +127,6 @@ begin
 				if(LC_on_counter < LC_on_max+padding) then
 					nxt_state <= read_LC_off;
 				else
-					--LC_on_counter <= 0;
 					nxt_state <= init;
 				end if;
 			when read_LC_off =>
@@ -150,7 +148,6 @@ begin
 					nxt_state <= check_data;
 				else
 					nxt_state <= read_data;
-					--reading_data <= '0';
 				end if;
 			when check_data=>
 				checking_data <= '1';
@@ -266,9 +263,6 @@ begin
 		elsif(rising_edge(reading_data)) then
 			shift_reg <= shift_reg((max_bits-1) - 1 downto 0) & data_bit;
 		end if;
-		--if(reading_data ='1') then
-		--	shift_reg <= shift_reg(max_bits-1 downto 1) & data_bit;
-		--end if;
 		-- process to define the shift register that holds the incomming
 		-- data.  (hint:  don't use canned VHDL functions for shifting)
 	end process shift_reg_proc;
